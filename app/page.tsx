@@ -6,13 +6,7 @@ import { listTournaments } from '@/lib/tournament/actions'
 export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
-  let tournaments = []
-  try {
-    tournaments = await listTournaments()
-    console.log("[v0] Tournaments loaded:", tournaments.length)
-  } catch (error) {
-    console.error("[v0] Error loading tournaments:", error)
-  }
+  const tournaments = await listTournaments()
 
   return (
     <div className="min-h-screen bg-background">

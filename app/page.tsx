@@ -1,16 +1,34 @@
-export default function Home() {
+import { Header } from '@/components/header'
+import { TournamentCard } from '@/components/tournament-card'
+import { EmptyTournaments } from '@/components/empty-tournaments'
+import { listTournaments } from '@/lib/tournament/actions'
+
+export const dynamic = 'force-dynamic'
+
+export default async function HomePage() {
+  const tournaments = await listTournaments()
+
   return (
-    <div className="flex min-h-screen items-center justify-center font-sans">
-      <main className="flex w-full max-w-3xl flex-col items-center gap-8 px-6 py-16 text-center sm:items-start sm:text-left">
-        <div className="flex flex-col gap-4">
-          <h1 className="text-4xl font-bold tracking-tight">
-            FooCheBeer
-          </h1>
-          <p className="max-w-md text-lg text-muted-foreground">
-            To get started, send a prompt or modify this page directly.
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">Tournaments</h1>
+          <p className="text-muted-foreground">
+            Manage your chess tournaments with Swiss-system pairings
           </p>
         </div>
+
+        {tournaments.length === 0 ? (
+          <EmptyTournaments />
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {tournaments.map((tournament) => (
+              <TournamentCard key={tournament.id} tournament={tournament} />
+            ))}
+          </div>
+        )}
       </main>
     </div>
-  );
+  )
 }

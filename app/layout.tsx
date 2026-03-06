@@ -7,8 +7,8 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
+  title: 'FooCheBeer - Chess Tournament Manager',
+  description: 'Professional Swiss-system chess tournament management. Create tournaments, manage pairings, and track standings.',
   generator: 'v0.app',
   icons: {
     icon: [

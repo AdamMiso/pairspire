@@ -8,14 +8,14 @@ export function EmptyTournaments() {
       <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-6">
         <Trophy className="h-8 w-8 text-muted-foreground" />
       </div>
-      <h2 className="text-2xl font-semibold mb-2">No tournaments yet</h2>
+      <h2 className="text-2xl font-semibold mb-2">Zatiaľ žiadne turnaje</h2>
       <p className="text-muted-foreground mb-6 max-w-md">
-        Create your first chess tournament to start tracking players, managing pairings, and calculating standings.
+        Vytvorte svoj prvý šachový turnaj a začnite sledovať hráčov, spravovať párovania a počítať poradie.
       </p>
       <Link href="/tournament/new">
         <Button size="lg" className="gap-2">
           <Plus className="h-4 w-4" />
-          Create Tournament
+          Vytvoriť turnaj
         </Button>
       </Link>
     </div>

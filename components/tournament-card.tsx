@@ -16,9 +16,9 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
   }
 
   const statusLabels = {
-    setup: 'Setup',
-    active: 'In Progress',
-    complete: 'Complete'
+    setup: 'Nastavenie',
+    active: 'Prebieha',
+    complete: 'Ukončený'
   }
 
   const playerCount = tournament.players?.length ?? 0
@@ -44,15 +44,15 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
             </div>
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4" />
-              <span>{playerCount} players</span>
+              <span>{playerCount} hráčov</span>
             </div>
             <div className="flex items-center gap-2">
               <Trophy className="h-4 w-4" />
-              <span>{tournament.rounds} rounds</span>
+              <span>{tournament.rounds} kôl</span>
             </div>
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4" />
-              <span>Round {tournament.currentRound}/{tournament.rounds}</span>
+              <span>Kolo {tournament.currentRound}/{tournament.rounds}</span>
             </div>
           </div>
         </CardContent>

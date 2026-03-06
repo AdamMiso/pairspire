@@ -41,7 +41,7 @@ export function RoundPairings({ roundNumber, matches, players, isActive }: Round
       case 'draw':
         return <Badge variant="secondary">½ - ½</Badge>
       case 'bye':
-        return <Badge variant="outline">Bye</Badge>
+        return <Badge variant="outline">Voľno</Badge>
       default:
         return null
     }
@@ -51,9 +51,9 @@ export function RoundPairings({ roundNumber, matches, players, isActive }: Round
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <span>Round {roundNumber}</span>
+          <span>Kolo {roundNumber}</span>
           {isActive && (
-            <Badge className="bg-primary/20 text-primary">In Progress</Badge>
+            <Badge className="bg-primary/20 text-primary">Prebieha</Badge>
           )}
         </CardTitle>
       </CardHeader>
@@ -79,7 +79,7 @@ export function RoundPairings({ roundNumber, matches, players, isActive }: Round
                   <div className="flex items-center gap-2">
                     <Circle className="h-3 w-3 fill-foreground text-foreground" />
                     <span className={`font-medium ${match.result === 'white' ? 'text-primary' : ''}`}>
-                      {white?.name ?? 'Unknown'}
+                      {white?.name ?? 'Neznámy'}
                     </span>
                     {white?.rating && (
                       <span className="text-xs text-muted-foreground">({white.rating})</span>
@@ -89,11 +89,11 @@ export function RoundPairings({ roundNumber, matches, players, isActive }: Round
                   {/* Result */}
                   <div className="flex items-center justify-center min-w-[80px]">
                     {match.isBye ? (
-                      <Badge variant="outline">Bye</Badge>
+                      <Badge variant="outline">Voľno</Badge>
                     ) : match.result !== 'pending' ? (
                       getResultDisplay(match.result)
                     ) : (
-                      <span className="text-muted-foreground">vs</span>
+                      <span className="text-muted-foreground">proti</span>
                     )}
                   </div>
 
@@ -105,7 +105,7 @@ export function RoundPairings({ roundNumber, matches, players, isActive }: Round
                           <span className="text-xs text-muted-foreground">({black.rating})</span>
                         )}
                         <span className={`font-medium ${match.result === 'black' ? 'text-primary' : ''}`}>
-                          {black?.name ?? 'Unknown'}
+                          {black?.name ?? 'Neznámy'}
                         </span>
                         <Circle className="h-3 w-3 text-muted-foreground" />
                       </>

@@ -3,6 +3,7 @@ export interface Player {
   tournamentId: string
   name: string
   rating: number | null
+  seedOrder?: number
   score: number
   buchholz: number
   wins: number

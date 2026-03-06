@@ -3,103 +3,114 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Chess Tournament Dark Theme - Professional Competition Style */
+/* Chess Tournament Theme - Paper & Graphite Style */
 :root {
-  /* Dark background with slight warmth */
-  --background: oklch(0.12 0.01 250);
-  --foreground: oklch(0.95 0 0);
+  /* Paper background with graphite text */
+  --background: #fdfcfb;
+  --foreground: #2d2a29;
   
-  /* Card surfaces - slightly lighter dark */
-  --card: oklch(0.16 0.01 250);
-  --card-foreground: oklch(0.95 0 0);
+  /* Card surfaces - white */
+  --card: #ffffff;
+  --card-foreground: #2d2a29;
   
-  --popover: oklch(0.16 0.01 250);
-  --popover-foreground: oklch(0.95 0 0);
+  --popover: #ffffff;
+  --popover-foreground: #2d2a29;
   
-  /* Primary - Amber/Gold accent for chess */
-  --primary: oklch(0.78 0.15 75);
-  --primary-foreground: oklch(0.12 0.01 250);
+  /* Primary - Accent Rust/Terracotta */
+  --primary: #9e5444;
+  --primary-foreground: #ffffff;
   
-  /* Secondary - Muted gray */
-  --secondary: oklch(0.22 0.01 250);
-  --secondary-foreground: oklch(0.9 0 0);
+  /* Secondary - Light Grey */
+  --secondary: #e6e4e1;
+  --secondary-foreground: #2d2a29;
   
   /* Muted for subtle elements */
-  --muted: oklch(0.22 0.01 250);
-  --muted-foreground: oklch(0.65 0 0);
+  --muted: #f0eee9;
+  --muted-foreground: #6b6661;
   
-  /* Accent - Teal for highlights */
-  --accent: oklch(0.6 0.12 180);
-  --accent-foreground: oklch(0.95 0 0);
+  /* Accent - Highlight Rust */
+  --accent: #9e5444;
+  --accent-foreground: #ffffff;
   
   /* Destructive - Red for errors */
-  --destructive: oklch(0.55 0.2 25);
-  --destructive-foreground: oklch(0.95 0 0);
+  --destructive: #cc3333;
+  --destructive-foreground: #ffffff;
   
   /* Borders and inputs */
-  --border: oklch(0.28 0.01 250);
-  --input: oklch(0.22 0.01 250);
-  --ring: oklch(0.78 0.15 75);
+  --border: #d6d3ce;
+  --input: #d6d3ce;
+  --ring: #9e5444;
   
   /* Chart colors */
-  --chart-1: oklch(0.78 0.15 75);
-  --chart-2: oklch(0.6 0.12 180);
-  --chart-3: oklch(0.65 0.15 140);
-  --chart-4: oklch(0.7 0.12 50);
-  --chart-5: oklch(0.55 0.2 25);
+  --chart-1: #9e5444;
+  --chart-2: #2d2a29;
+  --chart-3: #6b6661;
+  --chart-4: #e6e4e1;
+  --chart-5: #cc3333;
   
   --radius: 0.5rem;
   
   /* Sidebar */
-  --sidebar: oklch(0.1 0.01 250);
-  --sidebar-foreground: oklch(0.95 0 0);
-  --sidebar-primary: oklch(0.78 0.15 75);
-  --sidebar-primary-foreground: oklch(0.12 0.01 250);
-  --sidebar-accent: oklch(0.22 0.01 250);
-  --sidebar-accent-foreground: oklch(0.95 0 0);
-  --sidebar-border: oklch(0.28 0.01 250);
-  --sidebar-ring: oklch(0.78 0.15 75);
+  --sidebar: #fdfcfb;
+  --sidebar-foreground: #2d2a29;
+  --sidebar-primary: #9e5444;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e6e4e1;
+  --sidebar-accent-foreground: #2d2a29;
+  --sidebar-border: #d6d3ce;
+  --sidebar-ring: #9e5444;
   
   /* Custom chess colors */
-  --success: oklch(0.65 0.15 140);
-  --success-foreground: oklch(0.12 0.01 250);
-  --warning: oklch(0.78 0.15 75);
-  --warning-foreground: oklch(0.12 0.01 250);
+  --success: #2d4a22;
+  --success-foreground: #ffffff;
+  --warning: #9e5444;
+  --warning-foreground: #ffffff;
 }
 
 .dark {
-  --background: oklch(0.12 0.01 250);
-  --foreground: oklch(0.95 0 0);
-  --card: oklch(0.16 0.01 250);
-  --card-foreground: oklch(0.95 0 0);
-  --popover: oklch(0.16 0.01 250);
-  --popover-foreground: oklch(0.95 0 0);
-  --primary: oklch(0.78 0.15 75);
-  --primary-foreground: oklch(0.12 0.01 250);
-  --secondary: oklch(0.22 0.01 250);
-  --secondary-foreground: oklch(0.9 0 0);
-  --muted: oklch(0.22 0.01 250);
-  --muted-foreground: oklch(0.65 0 0);
-  --accent: oklch(0.6 0.12 180);
-  --accent-foreground: oklch(0.95 0 0);
-  --destructive: oklch(0.55 0.2 25);
-  --destructive-foreground: oklch(0.95 0 0);
-  --border: oklch(0.28 0.01 250);
-  --input: oklch(0.22 0.01 250);
-  --ring: oklch(0.78 0.15 75);
-  --chart-1: oklch(0.78 0.15 75);
-  --chart-2: oklch(0.6 0.12 180);
-  --chart-3: oklch(0.65 0.15 140);
-  --chart-4: oklch(0.7 0.12 50);
-  --chart-5: oklch(0.55 0.2 25);
-  --sidebar: oklch(0.1 0.01 250);
-  --sidebar-foreground: oklch(0.95 0 0);
-  --sidebar-primary: oklch(0.78 0.15 75);
-  --sidebar-primary-foreground: oklch(0.12 0.01 250);
-  --sidebar-accent: oklch(0.22 0.01 250);
-  --sidebar-accent-foreground: oklch(0.95 0 0);
-  --sidebar-border: oklch(0.28 0.01 250);
-  --sidebar-ring: oklch(0.78 0.15 75);
+  /* Charcoal background with chalk text */
+  --background: #1e1d1d;
+  --foreground: #e8e6e3;
+  
+  --card: #272625;
+  --card-foreground: #e8e6e3;
+  
+  --popover: #272625;
+  --popover-foreground: #e8e6e3;
+  
+  --primary: #9e5444;
+  --primary-foreground: #ffffff;
+  
+  --secondary: #3b3937;
+  --secondary-foreground: #e8e6e3;
+  
+  --muted: #33312f;
+  --muted-foreground: #a3a09a;
+  
+  --accent: #9e5444;
+  --accent-foreground: #ffffff;
+  
+  --destructive: #ff6666;
+  --destructive-foreground: #1e1d1d;
+  
+  --border: #45423f;
+  --input: #45423f;
+  --ring: #9e5444;
+  
+  --chart-1: #9e5444;
+  --chart-2: #e8e6e3;
+  --chart-3: #a3a09a;
+  --chart-4: #45423f;
+  --chart-5: #ff6666;
+  
+  --sidebar: #1e1d1d;
+  --sidebar-foreground: #e8e6e3;
+  --sidebar-primary: #9e5444;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #3b3937;
+  --sidebar-accent-foreground: #e8e6e3;
+  --sidebar-border: #45423f;
+  --sidebar-ring: #9e5444;
 }
 
 @theme inline {

@@ -47,7 +47,7 @@ export function RevisionHistory({ tournamentId, revisions }: RevisionHistoryProp
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
-    return date.toLocaleString('en-US', {
+    return date.toLocaleString('sk-SK', {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
@@ -60,13 +60,13 @@ export function RevisionHistory({ tournamentId, revisions }: RevisionHistoryProp
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <History className="h-4 w-4" />
-          History
+          História
         </CardTitle>
       </CardHeader>
       <CardContent>
         {revisions.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">
-            No history yet
+            Zatiaľ bez histórie
           </p>
         ) : (
           <ScrollArea className="h-[300px] pr-4">
@@ -100,16 +100,16 @@ export function RevisionHistory({ tournamentId, revisions }: RevisionHistoryProp
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Restore Revision</AlertDialogTitle>
+                          <AlertDialogTitle>Obnoviť revíziu</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This will restore the tournament to the state at "{revision.action}". 
-                            This action will create a new revision point.
+                            Turnaj sa obnoví do stavu pri akcii „{revision.action}“.
+                            Táto akcia vytvorí nový bod revízie.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogCancel>Zrušiť</AlertDialogCancel>
                           <AlertDialogAction onClick={() => handleRestore(revision.revisionNumber)}>
-                            Restore
+                            Obnoviť
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>

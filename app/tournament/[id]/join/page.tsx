@@ -36,7 +36,7 @@ export default function JoinPage({ params }: JoinPageProps) {
       })
       router.push(`/tournament/${id}`)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to join tournament')
+      setError(err instanceof Error ? err.message : 'Nepodarilo sa prihlásiť do turnaja')
       setIsLoading(false)
     }
   }
@@ -47,35 +47,35 @@ export default function JoinPage({ params }: JoinPageProps) {
       <main className="container mx-auto px-4 py-8">
         <Card className="max-w-md mx-auto">
           <CardHeader>
-            <CardTitle>Join Tournament</CardTitle>
+            <CardTitle>Prihlásiť sa do turnaja</CardTitle>
             <CardDescription>
-              Enter your details to register for this tournament
+              Zadajte svoje údaje na registráciu do tohto turnaja
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Your Name</Label>
+                <Label htmlFor="name">Vaše meno</Label>
                 <Input
                   id="name"
                   name="name"
-                  placeholder="Enter your name"
+                  placeholder="Zadajte svoje meno"
                   required
                   disabled={isLoading}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="rating">Rating (optional)</Label>
+                <Label htmlFor="rating">Rating (voliteľné)</Label>
                 <Input
                   id="rating"
                   name="rating"
                   type="number"
-                  placeholder="e.g., 1500"
+                  placeholder="napr. 1500"
                   disabled={isLoading}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Your chess rating (FIDE, USCF, or estimated)
+                  Váš šachový rating (FIDE, USCF alebo odhad)
                 </p>
               </div>
 
@@ -89,10 +89,10 @@ export default function JoinPage({ params }: JoinPageProps) {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Joining...
+                    Prihlasovanie...
                   </>
                 ) : (
-                  'Join Tournament'
+                  'Prihlásiť sa do turnaja'
                 )}
               </Button>
             </form>

@@ -19,9 +19,9 @@ export default async function HomePage() {
       <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Tournaments</h1>
+          <h1 className="text-3xl font-bold mb-2">Turnaje</h1>
           <p className="text-muted-foreground">
-            Manage your chess tournaments with Swiss-system pairings
+            Spravujte svoje šachové turnaje so švajčiarskym párovacím systémom
           </p>
         </div>
 

@@ -5,6 +5,12 @@ import { nanoid } from 'nanoid'
 import type { Tournament, Player, Round, Match, TournamentSnapshot } from './types'
 import { generateSwissPairings, calculateStandings } from './swiss-pairing'
 
+function isMissingColumnError(error: unknown, columnName: string): boolean {
+  if (!error || typeof error !== 'object') return false
+  const err = error as { code?: string; message?: string }
+  return err.code === '42703' && typeof err.message === 'string' && err.message.includes(`"${columnName}"`)
+}
+
 // Helper to create a snapshot
 async function createSnapshot(tournamentId: string): Promise<TournamentSnapshot> {
   const [tournament] = await sql`SELECT * FROM tournaments WHERE id = ${tournamentId}`
@@ -58,6 +64,7 @@ function mapPlayer(row: Record<string, unknown>): Player {
     tournamentId: row.tournament_id as string,
     name: row.name as string,
     rating: row.rating as number | null,
+    seedOrder: row.seed_order as number | undefined,
     score: row.score as number,
     buchholz: row.buchholz as number,
     wins: row.wins as number,
@@ -96,16 +103,62 @@ export async function createTournament(data: {
   date: string
   rounds: number
   byePoints?: number
+  players?: string[]
+  randomizeSeeding?: boolean
 }): Promise<Tournament> {
   const id = nanoid(10)
-  
-  await sql`
-    INSERT INTO tournaments (id, name, date, rounds, bye_points)
-    VALUES (${id}, ${data.name}, ${data.date}, ${data.rounds}, ${data.byePoints ?? 1.0})
-  `
+
+  const playerCount = data.players?.length ?? 0
+
+  try {
+    await sql`
+      INSERT INTO tournaments (id, name, date, rounds, bye_points, player_count)
+      VALUES (${id}, ${data.name}, ${data.date}, ${data.rounds}, ${data.byePoints ?? 1.0}, ${playerCount})
+    `
+  } catch (error) {
+    if (!isMissingColumnError(error, 'player_count')) {
+      throw error
+    }
+
+    await sql`
+      INSERT INTO tournaments (id, name, date, rounds, bye_points)
+      VALUES (${id}, ${data.name}, ${data.date}, ${data.rounds}, ${data.byePoints ?? 1.0})
+    `
+  }
+
+  if (data.players && data.players.length > 0) {
+    let finalPlayers = [...data.players]
+    if (data.randomizeSeeding) {
+      // Fisher-Yates shuffle
+      for (let i = finalPlayers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[finalPlayers[i], finalPlayers[j]] = [finalPlayers[j], finalPlayers[i]]
+      }
+    }
+
+    for (let i = 0; i < finalPlayers.length; i++) {
+      const playerId = nanoid(10)
+      const seedOrder = i + 1
+      try {
+        await sql`
+          INSERT INTO players (id, tournament_id, name, rating, seed_order)
+          VALUES (${playerId}, ${id}, ${finalPlayers[i]}, null, ${seedOrder})
+        `
+      } catch (error) {
+        if (!isMissingColumnError(error, 'seed_order')) {
+          throw error
+        }
+
+        await sql`
+          INSERT INTO players (id, tournament_id, name, rating)
+          VALUES (${playerId}, ${id}, ${finalPlayers[i]}, null)
+        `
+      }
+    }
+  }
   
   const [tournament] = await sql`SELECT * FROM tournaments WHERE id = ${id}`
-  await saveRevision(id, 'Created tournament')
+  await saveRevision(id, 'Vytvorený turnaj')
   
   return mapTournament(tournament)
 }
@@ -166,9 +219,9 @@ export async function updateTournament(
   }
   
   const tournament = await getTournament(id)
-  if (!tournament) throw new Error('Tournament not found')
+  if (!tournament) throw new Error('Turnaj sa nenašiel')
   
-  await saveRevision(id, 'Updated tournament settings')
+  await saveRevision(id, 'Aktualizované nastavenia turnaja')
   return tournament
 }
 
@@ -189,7 +242,7 @@ export async function addPlayer(tournamentId: string, data: {
   `
   
   const [player] = await sql`SELECT * FROM players WHERE id = ${id}`
-  await saveRevision(tournamentId, `Added player: ${data.name}`)
+  await saveRevision(tournamentId, `Pridaný hráč: ${data.name}`)
   
   return mapPlayer(player)
 }
@@ -199,7 +252,7 @@ export async function updatePlayer(
   data: Partial<Pick<Player, 'name' | 'rating' | 'isActive'>>
 ): Promise<Player> {
   const [existing] = await sql`SELECT * FROM players WHERE id = ${id}`
-  if (!existing) throw new Error('Player not found')
+  if (!existing) throw new Error('Hráč sa nenašiel')
   
   await sql`
     UPDATE players 
@@ -210,17 +263,17 @@ export async function updatePlayer(
   `
   
   const [player] = await sql`SELECT * FROM players WHERE id = ${id}`
-  await saveRevision(player.tournament_id as string, `Updated player: ${player.name}`)
+  await saveRevision(player.tournament_id as string, `Aktualizovaný hráč: ${player.name}`)
   
   return mapPlayer(player)
 }
 
 export async function removePlayer(id: string): Promise<void> {
   const [player] = await sql`SELECT * FROM players WHERE id = ${id}`
-  if (!player) throw new Error('Player not found')
+  if (!player) throw new Error('Hráč sa nenašiel')
   
   await sql`DELETE FROM players WHERE id = ${id}`
-  await saveRevision(player.tournament_id as string, `Removed player: ${player.name}`)
+  await saveRevision(player.tournament_id as string, `Odstránený hráč: ${player.name}`)
 }
 
 export async function getPlayers(tournamentId: string): Promise<Player[]> {
@@ -231,15 +284,15 @@ export async function getPlayers(tournamentId: string): Promise<Player[]> {
 // Round management
 export async function startNextRound(tournamentId: string): Promise<Round> {
   const tournament = await getTournament(tournamentId)
-  if (!tournament) throw new Error('Tournament not found')
+  if (!tournament) throw new Error('Turnaj sa nenašiel')
   
   if (tournament.currentRound >= tournament.rounds) {
-    throw new Error('All rounds have been completed')
+    throw new Error('Všetky kolá už boli ukončené')
   }
   
   const players = await getPlayers(tournamentId)
   if (players.filter(p => p.isActive).length < 2) {
-    throw new Error('Need at least 2 active players to start a round')
+    throw new Error('Na spustenie kola sú potrební aspoň 2 aktívni hráči')
   }
   
   // Get all past matches for pairing
@@ -301,7 +354,7 @@ export async function startNextRound(tournamentId: string): Promise<Round> {
   `
   
   const [round] = await sql`SELECT * FROM rounds WHERE id = ${roundId}`
-  await saveRevision(tournamentId, `Started round ${nextRoundNumber}`)
+  await saveRevision(tournamentId, `Spustené kolo ${nextRoundNumber}`)
   
   return mapRound(round)
 }
@@ -339,8 +392,8 @@ export async function recordMatchResult(
   result: 'white' | 'black' | 'draw'
 ): Promise<Match> {
   const [match] = await sql`SELECT * FROM matches WHERE id = ${matchId}`
-  if (!match) throw new Error('Match not found')
-  if (match.is_bye) throw new Error('Cannot record result for bye match')
+  if (!match) throw new Error('Partia sa nenašla')
+  if (match.is_bye) throw new Error('Pre partiu s voľnom nie je možné zapísať výsledok')
   
   const whiteId = match.white_player_id as string
   const blackId = match.black_player_id as string
@@ -361,7 +414,7 @@ export async function recordMatchResult(
   }
   
   const [updated] = await sql`SELECT * FROM matches WHERE id = ${matchId}`
-  await saveRevision(match.tournament_id as string, `Recorded result for board ${match.board_number}`)
+  await saveRevision(match.tournament_id as string, `Zapísaný výsledok na šachovnici ${match.board_number}`)
   
   // Check if round is complete
   const [incomplete] = await sql`
@@ -396,9 +449,9 @@ async function completeRound(roundId: string): Promise<void> {
   const [tournament] = await sql`SELECT * FROM tournaments WHERE id = ${round.tournament_id}`
   if (tournament && tournament.current_round >= tournament.rounds) {
     await sql`UPDATE tournaments SET status = 'complete' WHERE id = ${tournament.id}`
-    await saveRevision(tournament.id as string, 'Tournament completed')
+    await saveRevision(tournament.id as string, 'Turnaj ukončený')
   } else {
-    await saveRevision(round.tournament_id as string, `Completed round ${round.round_number}`)
+    await saveRevision(round.tournament_id as string, `Ukončené kolo ${round.round_number}`)
   }
 }
 
@@ -438,7 +491,7 @@ export async function restoreRevision(tournamentId: string, revisionNumber: numb
     WHERE tournament_id = ${tournamentId} AND revision_number = ${revisionNumber}
   `
   
-  if (!revision) throw new Error('Revision not found')
+  if (!revision) throw new Error('Revízia sa nenašla')
   
   const snapshot = revision.snapshot as TournamentSnapshot
   
@@ -487,7 +540,7 @@ export async function restoreRevision(tournamentId: string, revisionNumber: numb
     `
   }
   
-  await saveRevision(tournamentId, `Restored to revision ${revisionNumber}`)
+  await saveRevision(tournamentId, `Obnovené na revíziu ${revisionNumber}`)
 }
 
 // Get all matches for a tournament

@@ -51,7 +51,7 @@ export default async function TournamentPage({ params }: TournamentPageProps) {
         <div className="mb-6">
           <h1 className="text-3xl font-bold mb-2">{tournament.name}</h1>
           <p className="text-muted-foreground">
-            {tournament.date} | {tournament.rounds} rounds
+            {tournament.date} | {tournament.rounds} kôl
           </p>
         </div>
 
@@ -59,9 +59,9 @@ export default async function TournamentPage({ params }: TournamentPageProps) {
           <div className="space-y-6">
             <Tabs defaultValue={tournament.currentRound > 0 ? 'rounds' : 'standings'}>
               <TabsList>
-                <TabsTrigger value="standings">Standings</TabsTrigger>
-                <TabsTrigger value="rounds">Rounds</TabsTrigger>
-                <TabsTrigger value="players">Players</TabsTrigger>
+                <TabsTrigger value="standings">Poradie</TabsTrigger>
+                <TabsTrigger value="rounds">Kolá</TabsTrigger>
+                <TabsTrigger value="players">Hráči</TabsTrigger>
               </TabsList>
 
               <TabsContent value="standings" className="mt-4">
@@ -71,7 +71,7 @@ export default async function TournamentPage({ params }: TournamentPageProps) {
               <TabsContent value="rounds" className="mt-4 space-y-4">
                 {roundsData.length === 0 ? (
                   <div className="text-center py-12 text-muted-foreground">
-                    No rounds have started yet. Add players and start the first round.
+                    Zatiaľ sa nezačalo žiadne kolo. Pridajte hráčov a spustite prvé kolo.
                   </div>
                 ) : (
                   roundsData.map((round) => (
@@ -90,7 +90,6 @@ export default async function TournamentPage({ params }: TournamentPageProps) {
                 <PlayerManagement
                   tournamentId={id}
                   players={players}
-                  isSetup={tournament.status === 'setup'}
                 />
               </TabsContent>
             </Tabs>

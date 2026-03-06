@@ -6,8 +6,8 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'FooCheBeer - Chess Tournament Manager',
-  description: 'Professional Swiss-system chess tournament management. Create tournaments, manage pairings, and track standings.',
+  title: 'FooCheBeer - Správca šachových turnajov',
+  description: 'Profesionálna správa šachových turnajov švajčiarskym systémom. Vytvárajte turnaje, spravujte párovania a sledujte poradie.',
 }
 
 export default function RootLayout({
@@ -16,8 +16,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className="font-sans antialiased">
+    <html lang="sk" suppressHydrationWarning>
+      <body className="font-sans antialiased" suppressHydrationWarning>
         {children}
       </body>
     </html>

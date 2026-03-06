@@ -10,12 +10,11 @@ interface StandingsTableProps {
 }
 
 export function StandingsTable({ players, showRank = true }: StandingsTableProps) {
-  // Sort by score, buchholz, wins, then rating
   const sorted = [...players].sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score
     if (b.buchholz !== a.buchholz) return b.buchholz - a.buchholz
     if (b.wins !== a.wins) return b.wins - a.wins
-    return (b.rating ?? 0) - (a.rating ?? 0)
+    return (a.seedOrder ?? 999) - (b.seedOrder ?? 999)
   })
 
   const getRankIcon = (rank: number) => {
@@ -34,26 +33,25 @@ export function StandingsTable({ players, showRank = true }: StandingsTableProps
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Standings</CardTitle>
+        <CardTitle>Poradie</CardTitle>
       </CardHeader>
       <CardContent>
         {sorted.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
-            No players yet
+            Zatiaľ žiadni hráči
           </div>
         ) : (
           <div className="border rounded-md overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  {showRank && <TableHead className="w-[60px]">Rank</TableHead>}
-                  <TableHead>Player</TableHead>
-                  <TableHead className="text-center">Score</TableHead>
-                  <TableHead className="text-center">W</TableHead>
-                  <TableHead className="text-center">D</TableHead>
-                  <TableHead className="text-center">L</TableHead>
+                  {showRank && <TableHead className="w-[60px]">Por.</TableHead>}
+                  <TableHead>Hráč</TableHead>
+                  <TableHead className="text-center">Body</TableHead>
+                  <TableHead className="text-center">V</TableHead>
+                  <TableHead className="text-center">R</TableHead>
+                  <TableHead className="text-center">P</TableHead>
                   <TableHead className="text-center">Buchholz</TableHead>
-                  <TableHead className="text-right">Rating</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -74,12 +72,12 @@ export function StandingsTable({ players, showRank = true }: StandingsTableProps
                           <span className="font-medium">{player.name}</span>
                           {!player.isActive && (
                             <Badge variant="secondary" className="text-xs">
-                              Withdrawn
+                              Odstúpil
                             </Badge>
                           )}
                           {player.hasHadBye && (
                             <Badge variant="outline" className="text-xs">
-                              Bye
+                              Voľno
                             </Badge>
                           )}
                         </div>
@@ -98,9 +96,6 @@ export function StandingsTable({ players, showRank = true }: StandingsTableProps
                       </TableCell>
                       <TableCell className="text-center">
                         {player.buchholz.toFixed(1)}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {player.rating ?? '-'}
                       </TableCell>
                     </TableRow>
                   )

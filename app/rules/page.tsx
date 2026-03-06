@@ -7,53 +7,53 @@ export default function RulesPage() {
       <Header />
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Swiss-System Tournament Rules</h1>
+          <h1 className="text-3xl font-bold mb-2">Pravidlá turnaja švajčiarskym systémom</h1>
           <p className="text-muted-foreground">
-            Understanding how Swiss-system chess tournaments work
+            Ako fungujú šachové turnaje švajčiarskym systémom
           </p>
         </div>
 
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>What is a Swiss Tournament?</CardTitle>
+              <CardTitle>Čo je turnaj švajčiarskym systémom?</CardTitle>
             </CardHeader>
             <CardContent className="prose prose-invert max-w-none">
               <p className="text-muted-foreground leading-relaxed">
-                The Swiss-system tournament is a non-eliminating tournament format which features a fixed 
-                number of rounds of competition, but considerably fewer than in a round-robin tournament. 
-                In a Swiss tournament, each competitor does not play every other. Competitors meet one-on-one 
-                in each round and are paired using a set of rules designed to ensure that each competitor 
-                plays opponents with a similar running score, but does not play the same opponent more than once.
+                Turnaj švajčiarskym systémom je nevyraďovací formát so stanoveným počtom kôl,
+                ktorý je výrazne nižší než pri turnaji každý s každým.
+                V švajčiarskom turnaji nehrá každý účastník proti každému.
+                Hráči sa v každom kole stretávajú jeden na jedného a párujú sa podľa pravidiel,
+                ktoré zabezpečujú súperov s podobným priebežným skóre, no bez opakovania rovnakého súpera.
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Pairing Rules</CardTitle>
+              <CardTitle>Pravidlá párovania</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-3 text-muted-foreground">
                 <li className="flex gap-3">
                   <span className="text-primary font-semibold">1.</span>
-                  <span>Players with the same score are paired together when possible</span>
+                  <span>Hráči s rovnakým skóre sa párujú spolu, ak je to možné</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-primary font-semibold">2.</span>
-                  <span>No player can face the same opponent twice in a tournament</span>
+                  <span>Žiadny hráč nemôže v turnaji naraziť na rovnakého súpera dvakrát</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-primary font-semibold">3.</span>
-                  <span>Colors (white/black) are assigned to balance each players color history</span>
+                  <span>Farby (biela/čierna) sa prideľujú tak, aby sa vyvažovala história farieb hráča</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-primary font-semibold">4.</span>
-                  <span>If there is an odd number of players, the lowest-scoring player who has not yet received a bye gets one</span>
+                  <span>Ak je nepárny počet hráčov, voľno dostane najnižšie bodujúci hráč, ktorý ho ešte nemal</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-primary font-semibold">5.</span>
-                  <span>Higher-rated players are given preference when multiple valid pairings exist</span>
+                  <span>Ak existuje viac platných párovaní, prednosť majú hráči s vyšším ratingom</span>
                 </li>
               </ul>
             </CardContent>
@@ -61,21 +61,21 @@ export default function RulesPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Scoring System</CardTitle>
+              <CardTitle>Bodovací systém</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid gap-4 sm:grid-cols-3">
                 <div className="p-4 rounded-lg bg-muted/50">
                   <div className="text-2xl font-bold text-primary">1</div>
-                  <div className="text-sm text-muted-foreground">Win</div>
+                  <div className="text-sm text-muted-foreground">Výhra</div>
                 </div>
                 <div className="p-4 rounded-lg bg-muted/50">
                   <div className="text-2xl font-bold text-primary">0.5</div>
-                  <div className="text-sm text-muted-foreground">Draw</div>
+                  <div className="text-sm text-muted-foreground">Remíza</div>
                 </div>
                 <div className="p-4 rounded-lg bg-muted/50">
                   <div className="text-2xl font-bold text-primary">0</div>
-                  <div className="text-sm text-muted-foreground">Loss</div>
+                  <div className="text-sm text-muted-foreground">Prehra</div>
                 </div>
               </div>
             </CardContent>
@@ -83,32 +83,32 @@ export default function RulesPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Tiebreakers</CardTitle>
+              <CardTitle>Pomocné hodnotenia</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground mb-4">
-                When players have the same score, the following tiebreakers are applied in order:
+                Keď majú hráči rovnaké skóre, použijú sa tieto pomocné hodnotenia v tomto poradí:
               </p>
               <ol className="space-y-3 text-muted-foreground">
                 <li className="flex gap-3">
                   <span className="text-primary font-semibold">1.</span>
                   <div>
-                    <span className="font-medium text-foreground">Buchholz Score</span>
-                    <p className="text-sm">Sum of opponents scores. Higher is better as it indicates stronger opposition.</p>
+                    <span className="font-medium text-foreground">Buchholzovo skóre</span>
+                    <p className="text-sm">Súčet bodov súperov. Vyššia hodnota je lepšia, pretože znamená silnejších súperov.</p>
                   </div>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-primary font-semibold">2.</span>
                   <div>
-                    <span className="font-medium text-foreground">Number of Wins</span>
-                    <p className="text-sm">More wins indicate more decisive play.</p>
+                    <span className="font-medium text-foreground">Počet výhier</span>
+                    <p className="text-sm">Viac výhier znamená rozhodnejšiu hru.</p>
                   </div>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-primary font-semibold">3.</span>
                   <div>
                     <span className="font-medium text-foreground">Rating</span>
-                    <p className="text-sm">Higher-rated player ranks higher if all else is equal.</p>
+                    <p className="text-sm">Vyššie hodnotený hráč sa umiestni vyššie, ak sú ostatné kritériá rovnaké.</p>
                   </div>
                 </li>
               </ol>
@@ -117,28 +117,27 @@ export default function RulesPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Bye Rules</CardTitle>
+              <CardTitle>Pravidlá voľna (bye)</CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-3">
               <p>
-                A bye is given when there is an odd number of active players in a round. The player 
-                receiving the bye does not play that round but is awarded points (typically 1 point, 
-                equivalent to a win).
+                Voľno sa udeľuje, keď je v kole nepárny počet aktívnych hráčov.
+                Hráč s voľnom v danom kole nehrá, ale získa body (typicky 1 bod, teda ako za výhru).
               </p>
               <p>
-                The bye is given to the lowest-scoring player who has not previously received a bye. 
-                If all players have had a bye, the lowest-scoring player receives it.
+                Voľno dostane najnižšie bodujúci hráč, ktorý ho ešte predtým nedostal.
+                Ak už voľno mali všetci hráči, dostane ho najnižšie bodujúci hráč.
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Recommended Number of Rounds</CardTitle>
+              <CardTitle>Odporúčaný počet kôl</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground mb-4">
-                The optimal number of rounds depends on the number of players:
+                Optimálny počet kôl závisí od počtu hráčov:
               </p>
               <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-4">
                 {[
@@ -148,13 +147,13 @@ export default function RulesPage() {
                   { players: '33-64', rounds: '6-7' },
                 ].map((item) => (
                   <div key={item.players} className="p-3 rounded-lg bg-muted/50 text-center">
-                    <div className="text-sm text-muted-foreground">{item.players} players</div>
-                    <div className="font-semibold text-primary">{item.rounds} rounds</div>
+                    <div className="text-sm text-muted-foreground">{item.players} hráčov</div>
+                    <div className="font-semibold text-primary">{item.rounds} kôl</div>
                   </div>
                 ))}
               </div>
               <p className="text-sm text-muted-foreground mt-4">
-                Formula: rounds = ceiling(log2(players)) for a guaranteed unique winner
+                Vzorec: počet kôl = ceiling(log2(počet hráčov)) pre zaručeného jednoznačného víťaza
               </p>
             </CardContent>
           </Card>

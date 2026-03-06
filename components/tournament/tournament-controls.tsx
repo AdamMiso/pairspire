@@ -44,7 +44,7 @@ export function TournamentControls({ tournament, players, hasActiveRound }: Tour
       await startNextRound(tournament.id)
       router.refresh()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to start round')
+      setError(err instanceof Error ? err.message : 'Nepodarilo sa spustiť kolo')
     } finally {
       setIsStarting(false)
     }
@@ -61,16 +61,16 @@ export function TournamentControls({ tournament, players, hasActiveRound }: Tour
   }
 
   const statusConfig = {
-    setup: { label: 'Setup', color: 'bg-muted text-muted-foreground' },
-    active: { label: 'In Progress', color: 'bg-primary/20 text-primary' },
-    complete: { label: 'Complete', color: 'bg-accent/20 text-accent' }
+    setup: { label: 'Nastavenie', color: 'bg-muted text-muted-foreground' },
+    active: { label: 'Prebieha', color: 'bg-primary/20 text-primary' },
+    complete: { label: 'Ukončený', color: 'bg-accent/20 text-accent' }
   }
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <span>Tournament Controls</span>
+          <span>Ovládanie turnaja</span>
           <Badge className={statusConfig[tournament.status].color}>
             {statusConfig[tournament.status].label}
           </Badge>
@@ -79,19 +79,19 @@ export function TournamentControls({ tournament, players, hasActiveRound }: Tour
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <span className="text-muted-foreground">Round</span>
+            <span className="text-muted-foreground">Kolo</span>
             <p className="font-semibold">{tournament.currentRound} / {tournament.rounds}</p>
           </div>
           <div>
-            <span className="text-muted-foreground">Players</span>
-            <p className="font-semibold">{activePlayers.length} active</p>
+            <span className="text-muted-foreground">Hráči</span>
+            <p className="font-semibold">{activePlayers.length} aktívnych</p>
           </div>
           <div>
-            <span className="text-muted-foreground">Bye Points</span>
+            <span className="text-muted-foreground">Body za voľno</span>
             <p className="font-semibold">{tournament.byePoints}</p>
           </div>
           <div>
-            <span className="text-muted-foreground">Date</span>
+            <span className="text-muted-foreground">Dátum</span>
             <p className="font-semibold">{tournament.date}</p>
           </div>
         </div>
@@ -106,7 +106,7 @@ export function TournamentControls({ tournament, players, hasActiveRound }: Tour
         {tournament.status === 'complete' ? (
           <div className="flex items-center gap-2 text-sm text-accent bg-accent/10 px-3 py-2 rounded-md">
             <CheckCircle2 className="h-4 w-4" />
-            Tournament completed!
+            Turnaj je ukončený!
           </div>
         ) : (
           <div className="flex flex-col gap-2">
@@ -118,25 +118,25 @@ export function TournamentControls({ tournament, players, hasActiveRound }: Tour
               {isStarting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Starting Round...
+                  Spúšťam kolo...
                 </>
               ) : (
                 <>
                   <Play className="mr-2 h-4 w-4" />
-                  Start Round {tournament.currentRound + 1}
+                  Spustiť kolo {tournament.currentRound + 1}
                 </>
               )}
             </Button>
 
             {!canStartRound && activePlayers.length < 2 && (
               <p className="text-xs text-muted-foreground text-center">
-                Need at least 2 players to start
+                Na spustenie sú potrební aspoň 2 hráči
               </p>
             )}
 
             {!canStartRound && hasActiveRound && (
               <p className="text-xs text-muted-foreground text-center">
-                Complete current round to continue
+                Na pokračovanie dokončite aktuálne kolo
               </p>
             )}
           </div>
@@ -147,18 +147,18 @@ export function TournamentControls({ tournament, players, hasActiveRound }: Tour
             <AlertDialogTrigger asChild>
               <Button variant="outline" className="w-full text-destructive hover:text-destructive">
                 <Trash2 className="mr-2 h-4 w-4" />
-                Delete Tournament
+                Vymazať turnaj
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Delete Tournament</AlertDialogTitle>
+                <AlertDialogTitle>Vymazať turnaj</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Are you sure you want to delete "{tournament.name}"? This action cannot be undone.
+                  Naozaj chcete vymazať „{tournament.name}“? Túto akciu nemožno vrátiť späť.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel>Zrušiť</AlertDialogCancel>
                 <AlertDialogAction
                   onClick={handleDelete}
                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
@@ -167,7 +167,7 @@ export function TournamentControls({ tournament, players, hasActiveRound }: Tour
                   {isDeleting ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   ) : null}
-                  Delete
+                  Vymazať
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
 import type { Tournament } from '@/lib/tournament/types'
-import { CalendarDays, Users, Trophy, Clock } from 'lucide-react'
+import { ArrowRight, CalendarDays, Clock, Trophy, Users } from 'lucide-react'
 
 interface TournamentCardProps {
   tournament: Tournament
@@ -11,8 +12,8 @@ interface TournamentCardProps {
 export function TournamentCard({ tournament }: TournamentCardProps) {
   const statusColors = {
     setup: 'bg-muted text-muted-foreground',
-    active: 'bg-primary/20 text-primary',
-    complete: 'bg-accent/20 text-accent'
+    active: 'bg-primary/15 text-primary',
+    complete: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200'
   }
 
   const statusLabels = {
@@ -21,14 +22,15 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
     complete: 'Ukončený'
   }
 
-  const playerCount = tournament.players?.length ?? 0
+  const playerCount = tournament.playerCount ?? tournament.players?.length ?? 0
+  const progress = tournament.rounds === 0 ? 0 : Math.round((tournament.currentRound / tournament.rounds) * 100)
 
   return (
-    <Link href={`/tournament/${tournament.id}`}>
-      <Card className="group hover:border-primary/50 transition-colors cursor-pointer h-full">
+    <Link href={`/tournament/${tournament.id}`} className="block h-full">
+      <Card className="group h-full cursor-pointer transition-colors hover:border-primary/50">
         <CardHeader className="pb-3">
-          <div className="flex items-start justify-between">
-            <CardTitle className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
+          <div className="flex items-start justify-between gap-3">
+            <CardTitle className="line-clamp-2 text-lg font-semibold text-foreground transition-colors group-hover:text-primary">
               {tournament.name}
             </CardTitle>
             <Badge className={statusColors[tournament.status]} variant="secondary">
@@ -36,7 +38,7 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
             </Badge>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-3 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <CalendarDays className="h-4 w-4" />
@@ -54,6 +56,17 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
               <Clock className="h-4 w-4" />
               <span>Kolo {tournament.currentRound}/{tournament.rounds}</span>
             </div>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>Postup turnaja</span>
+              <span>{progress}%</span>
+            </div>
+            <Progress value={progress} />
+          </div>
+          <div className="flex items-center justify-between border-t pt-3 text-sm font-medium text-primary">
+            <span>Otvoriť turnaj</span>
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </div>
         </CardContent>
       </Card>

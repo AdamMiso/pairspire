@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
 import { startNextRound, deleteTournament } from '@/lib/tournament/actions'
 import type { Tournament, Player } from '@/lib/tournament/types'
 import { Play, Trash2, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react'
@@ -36,6 +37,8 @@ export function TournamentControls({ tournament, players, hasActiveRound }: Tour
   const canStartRound = activePlayers.length >= 2 && 
     !hasActiveRound && 
     tournament.currentRound < tournament.rounds
+  const completedRoundEstimate = hasActiveRound ? Math.max(tournament.currentRound - 1, 0) : tournament.currentRound
+  const progressValue = tournament.rounds === 0 ? 0 : Math.round((completedRoundEstimate / tournament.rounds) * 100)
 
   async function handleStartRound() {
     setIsStarting(true)
@@ -62,8 +65,8 @@ export function TournamentControls({ tournament, players, hasActiveRound }: Tour
 
   const statusConfig = {
     setup: { label: 'Nastavenie', color: 'bg-muted text-muted-foreground' },
-    active: { label: 'Prebieha', color: 'bg-primary/20 text-primary' },
-    complete: { label: 'Ukončený', color: 'bg-accent/20 text-accent' }
+    active: { label: 'Prebieha', color: 'bg-primary/15 text-primary' },
+    complete: { label: 'Ukončený', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200' }
   }
 
   return (
@@ -77,6 +80,14 @@ export function TournamentControls({ tournament, players, hasActiveRound }: Tour
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">Postup</span>
+            <span className="font-medium">{progressValue}%</span>
+          </div>
+          <Progress value={progressValue} />
+        </div>
+
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <span className="text-muted-foreground">Kolo</span>
@@ -113,30 +124,30 @@ export function TournamentControls({ tournament, players, hasActiveRound }: Tour
             <Button
               onClick={handleStartRound}
               disabled={!canStartRound || isStarting}
-              className="w-full"
+              className="w-full gap-2"
             >
               {isStarting ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin" />
                   Spúšťam kolo...
                 </>
               ) : (
                 <>
-                  <Play className="mr-2 h-4 w-4" />
-                  Spustiť kolo {tournament.currentRound + 1}
+                  <Play className="h-4 w-4" />
+                  {hasActiveRound ? `Dokončiť kolo ${tournament.currentRound}` : `Spustiť kolo ${tournament.currentRound + 1}`}
                 </>
               )}
             </Button>
 
             {!canStartRound && activePlayers.length < 2 && (
               <p className="text-xs text-muted-foreground text-center">
-                Na spustenie sú potrební aspoň 2 hráči
+                Na spustenie sú potrební aspoň 2 aktívni hráči.
               </p>
             )}
 
             {!canStartRound && hasActiveRound && (
               <p className="text-xs text-muted-foreground text-center">
-                Na pokračovanie dokončite aktuálne kolo
+                Na pokračovanie zapíšte všetky výsledky aktuálneho kola.
               </p>
             )}
           </div>

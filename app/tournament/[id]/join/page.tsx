@@ -2,13 +2,14 @@
 
 import { useState, use } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Header } from '@/components/header'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { addPlayer } from '@/lib/tournament/actions'
-import { Loader2 } from 'lucide-react'
+import { ArrowLeft, Loader2, UserPlus } from 'lucide-react'
 
 interface JoinPageProps {
   params: Promise<{ id: string }>
@@ -45,11 +46,22 @@ export default function JoinPage({ params }: JoinPageProps) {
     <div className="min-h-screen bg-background">
       <Header />
       <main className="container mx-auto px-4 py-8">
+        <div className="mx-auto mb-6 max-w-md">
+          <Button asChild variant="ghost" className="gap-2 px-0">
+            <Link href={`/tournament/${id}`}>
+              <ArrowLeft className="h-4 w-4" />
+              Späť na turnaj
+            </Link>
+          </Button>
+        </div>
         <Card className="max-w-md mx-auto">
           <CardHeader>
+            <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-md bg-primary/10">
+              <UserPlus className="h-5 w-5 text-primary" />
+            </div>
             <CardTitle>Prihlásiť sa do turnaja</CardTitle>
             <CardDescription>
-              Zadajte svoje údaje na registráciu do tohto turnaja
+              Zadajte meno a voliteľné Elo. Organizátor vás potom uvidí v zozname hráčov.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -61,21 +73,23 @@ export default function JoinPage({ params }: JoinPageProps) {
                   name="name"
                   placeholder="Zadajte svoje meno"
                   required
+                  autoComplete="name"
                   disabled={isLoading}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="rating">Rating (voliteľné)</Label>
+                <Label htmlFor="rating">Elo (voliteľné)</Label>
                 <Input
                   id="rating"
                   name="rating"
                   type="number"
+                  min="0"
                   placeholder="napr. 1500"
                   disabled={isLoading}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Váš šachový rating (FIDE, USCF alebo odhad)
+                  Vaše šachové Elo (FIDE, USCF alebo odhad)
                 </p>
               </div>
 
@@ -85,14 +99,17 @@ export default function JoinPage({ params }: JoinPageProps) {
                 </div>
               )}
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full gap-2" disabled={isLoading}>
                 {isLoading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                     Prihlasovanie...
                   </>
                 ) : (
-                  'Prihlásiť sa do turnaja'
+                  <>
+                    <UserPlus className="h-4 w-4" />
+                    Prihlásiť sa
+                  </>
                 )}
               </Button>
             </form>

@@ -33,12 +33,20 @@ export function StandingsTable({ players, showRank = true }: StandingsTableProps
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Poradie</CardTitle>
+        <CardTitle className="flex items-center justify-between gap-3">
+          <span>Poradie</span>
+          {sorted.length > 0 && (
+            <Badge variant="secondary">{sorted.length} hráčov</Badge>
+          )}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         {sorted.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            Zatiaľ žiadni hráči
+          <div className="rounded-md border bg-muted/30 px-6 py-10 text-center">
+            <h2 className="font-semibold">Zatiaľ žiadni hráči</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Pridajte hráčov a poradie sa začne počítať automaticky.
+            </p>
           </div>
         ) : (
           <div className="border rounded-md overflow-x-auto">
@@ -82,19 +90,19 @@ export function StandingsTable({ players, showRank = true }: StandingsTableProps
                           )}
                         </div>
                       </TableCell>
-                      <TableCell className="text-center font-semibold text-primary">
+                      <TableCell className="text-center font-semibold tabular-nums text-primary">
                         {player.score}
                       </TableCell>
-                      <TableCell className="text-center text-green-500">
+                      <TableCell className="text-center tabular-nums">
                         {player.wins}
                       </TableCell>
-                      <TableCell className="text-center text-muted-foreground">
+                      <TableCell className="text-center tabular-nums text-muted-foreground">
                         {player.draws}
                       </TableCell>
-                      <TableCell className="text-center text-destructive">
+                      <TableCell className="text-center tabular-nums text-destructive">
                         {player.losses}
                       </TableCell>
-                      <TableCell className="text-center">
+                      <TableCell className="text-center tabular-nums">
                         {player.buchholz.toFixed(1)}
                       </TableCell>
                     </TableRow>

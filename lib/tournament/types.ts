@@ -42,6 +42,7 @@ export interface Tournament {
   currentRound: number
   status: 'setup' | 'active' | 'complete'
   byePoints: number
+  playerCount?: number
   players?: Player[]
   roundsList?: Round[]
 }

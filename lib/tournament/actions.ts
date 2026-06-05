@@ -54,7 +54,8 @@ function mapTournament(row: Record<string, unknown>): Tournament {
     rounds: row.rounds as number,
     currentRound: row.current_round as number,
     status: row.status as Tournament['status'],
-    byePoints: row.bye_points as number
+    byePoints: row.bye_points as number,
+    playerCount: row.player_count === undefined ? undefined : Number(row.player_count)
   }
 }
 
@@ -172,13 +173,20 @@ export async function getTournament(id: string): Promise<Tournament | null> {
   
   return {
     ...mapTournament(tournament),
+    playerCount: players.length,
     players: players.map(mapPlayer),
     roundsList: rounds.map(mapRound)
   }
 }
 
 export async function listTournaments(): Promise<Tournament[]> {
-  const tournaments = await sql`SELECT * FROM tournaments ORDER BY created_at DESC`
+  const tournaments = await sql`
+    SELECT tournaments.*, COUNT(players.id)::int AS player_count
+    FROM tournaments
+    LEFT JOIN players ON players.tournament_id = tournaments.id
+    GROUP BY tournaments.id
+    ORDER BY tournaments.created_at DESC
+  `
   return tournaments.map(mapTournament)
 }
 

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { recordMatchResult } from '@/lib/tournament/actions'
 import type { Match, Player } from '@/lib/tournament/types'
-import { Loader2, Circle } from 'lucide-react'
+import { CheckCircle2, Circle, Loader2 } from 'lucide-react'
 
 interface RoundPairingsProps {
   roundNumber: number
@@ -50,11 +50,12 @@ export function RoundPairings({ roundNumber, matches, players, isActive }: Round
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center justify-between">
+        <CardTitle className="flex items-center justify-between gap-3">
           <span>Kolo {roundNumber}</span>
           {isActive && (
-            <Badge className="bg-primary/20 text-primary">Prebieha</Badge>
+            <Badge className="bg-primary/15 text-primary">Prebieha</Badge>
           )}
+          {!isActive && <Badge variant="secondary">Uzavreté</Badge>}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -68,17 +69,16 @@ export function RoundPairings({ roundNumber, matches, players, isActive }: Round
             return (
               <div
                 key={match.id}
-                className="flex items-center gap-4 p-3 rounded-lg bg-muted/50 border"
+                className="grid gap-3 rounded-lg border bg-muted/35 p-3 sm:grid-cols-[2.5rem,1fr,auto] sm:items-center"
               >
-                <div className="w-8 text-center text-sm text-muted-foreground font-medium">
+                <div className="flex h-10 w-10 items-center justify-center rounded-md border bg-card text-sm font-semibold text-muted-foreground">
                   {match.boardNumber}
                 </div>
 
-                <div className="flex-1 grid grid-cols-[1fr,auto,1fr] gap-4 items-center">
-                  {/* White player */}
+                <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr),5rem,minmax(0,1fr)] sm:items-center">
                   <div className="flex items-center gap-2">
-                    <Circle className="h-3 w-3 fill-foreground text-foreground" />
-                    <span className={`font-medium ${match.result === 'white' ? 'text-primary' : ''}`}>
+                    <Circle className="h-3 w-3 fill-background text-foreground" />
+                    <span className={`min-w-0 truncate font-medium ${match.result === 'white' ? 'text-primary' : ''}`}>
                       {white?.name ?? 'Neznámy'}
                     </span>
                     {white?.rating && (
@@ -86,25 +86,23 @@ export function RoundPairings({ roundNumber, matches, players, isActive }: Round
                     )}
                   </div>
 
-                  {/* Result */}
-                  <div className="flex items-center justify-center min-w-[80px]">
+                  <div className="flex items-center sm:justify-center">
                     {match.isBye ? (
                       <Badge variant="outline">Voľno</Badge>
                     ) : match.result !== 'pending' ? (
                       getResultDisplay(match.result)
                     ) : (
-                      <span className="text-muted-foreground">proti</span>
+                      <span className="text-sm text-muted-foreground">proti</span>
                     )}
                   </div>
 
-                  {/* Black player */}
-                  <div className="flex items-center gap-2 justify-end">
+                  <div className="flex items-center gap-2 sm:justify-end">
                     {!match.isBye && (
                       <>
                         {black?.rating && (
                           <span className="text-xs text-muted-foreground">({black.rating})</span>
                         )}
-                        <span className={`font-medium ${match.result === 'black' ? 'text-primary' : ''}`}>
+                        <span className={`min-w-0 truncate font-medium ${match.result === 'black' ? 'text-primary' : ''}`}>
                           {black?.name ?? 'Neznámy'}
                         </span>
                         <Circle className="h-3 w-3 text-muted-foreground" />
@@ -113,18 +111,19 @@ export function RoundPairings({ roundNumber, matches, players, isActive }: Round
                   </div>
                 </div>
 
-                {/* Action buttons */}
                 {isActive && isPending && !match.isBye && (
-                  <div className="flex items-center gap-1">
+                  <div className="flex flex-wrap items-center gap-2 sm:justify-end">
                     {isLoading ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <div className="flex h-10 min-w-28 items-center justify-center">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      </div>
                     ) : (
                       <>
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => handleResult(match.id, 'white')}
-                          className="text-xs px-2"
+                          className="min-w-16"
                         >
                           1-0
                         </Button>
@@ -132,7 +131,7 @@ export function RoundPairings({ roundNumber, matches, players, isActive }: Round
                           size="sm"
                           variant="outline"
                           onClick={() => handleResult(match.id, 'draw')}
-                          className="text-xs px-2"
+                          className="min-w-16"
                         >
                           ½-½
                         </Button>
@@ -140,12 +139,19 @@ export function RoundPairings({ roundNumber, matches, players, isActive }: Round
                           size="sm"
                           variant="outline"
                           onClick={() => handleResult(match.id, 'black')}
-                          className="text-xs px-2"
+                          className="min-w-16"
                         >
                           0-1
                         </Button>
                       </>
                     )}
+                  </div>
+                )}
+
+                {!isPending && !match.isBye && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground sm:justify-end">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                    Zapísané
                   </div>
                 )}
               </div>

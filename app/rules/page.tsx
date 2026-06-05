@@ -1,15 +1,17 @@
 import { Header } from '@/components/header'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 
 export default function RulesPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Pravidlá turnaja švajčiarskym systémom</h1>
-          <p className="text-muted-foreground">
-            Ako fungujú šachové turnaje švajčiarskym systémom
+      <main className="container mx-auto max-w-4xl px-4 py-6 sm:py-8">
+        <div className="mb-8 rounded-lg border bg-card p-5 sm:p-6">
+          <Badge variant="secondary" className="mb-3">Sprievodca</Badge>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Pravidlá turnaja švajčiarskym systémom</h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
+            Praktický prehľad toho, ako aplikácia páruje hráčov, počíta výsledky a rozhoduje poradie.
           </p>
         </div>
 
@@ -18,7 +20,7 @@ export default function RulesPage() {
             <CardHeader>
               <CardTitle>Čo je turnaj švajčiarskym systémom?</CardTitle>
             </CardHeader>
-            <CardContent className="prose prose-invert max-w-none">
+            <CardContent>
               <p className="text-muted-foreground leading-relaxed">
                 Turnaj švajčiarskym systémom je nevyraďovací formát so stanoveným počtom kôl,
                 ktorý je výrazne nižší než pri turnaji každý s každým.
@@ -107,7 +109,7 @@ export default function RulesPage() {
                 <li className="flex gap-3">
                   <span className="text-primary font-semibold">3.</span>
                   <div>
-                    <span className="font-medium text-foreground">Rating</span>
+                    <span className="font-medium text-foreground">Elo</span>
                     <p className="text-sm">Vyššie hodnotený hráč sa umiestni vyššie, ak sú ostatné kritériá rovnaké.</p>
                   </div>
                 </li>

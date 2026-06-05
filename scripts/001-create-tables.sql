@@ -1,4 +1,4 @@
--- FooCheBeer Database Schema
+-- Pairspire Database Schema
 -- Chess Tournament Tracking App
 
 -- Tournaments table

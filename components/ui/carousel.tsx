@@ -196,7 +196,7 @@ function CarouselPrevious({
       {...props}
     >
       <ArrowLeft />
-      <span className="sr-only">Predchádzajúci slide</span>
+      <span className="sr-only">Predchádzajúca snímka</span>
     </Button>
   )
 }
@@ -226,7 +226,7 @@ function CarouselNext({
       {...props}
     >
       <ArrowRight />
-      <span className="sr-only">Nasledujúci slide</span>
+      <span className="sr-only">Nasledujúca snímka</span>
     </Button>
   )
 }

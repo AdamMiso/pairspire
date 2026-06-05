@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { recordMatchResult } from '@/lib/tournament/actions'
 import type { Match, Player } from '@/lib/tournament/types'
+import { translations, type Language } from '@/lib/i18n'
 import { CheckCircle2, Circle, Loader2 } from 'lucide-react'
 
 interface RoundPairingsProps {
@@ -14,10 +15,12 @@ interface RoundPairingsProps {
   matches: Match[]
   players: Player[]
   isActive: boolean
+  language: Language
 }
 
-export function RoundPairings({ roundNumber, matches, players, isActive }: RoundPairingsProps) {
+export function RoundPairings({ roundNumber, matches, players, isActive, language }: RoundPairingsProps) {
   const router = useRouter()
+  const t = translations[language]
   const [loadingMatch, setLoadingMatch] = useState<string | null>(null)
 
   const getPlayer = (id: string | null) => players.find(p => p.id === id)
@@ -41,7 +44,7 @@ export function RoundPairings({ roundNumber, matches, players, isActive }: Round
       case 'draw':
         return <Badge variant="secondary">½ - ½</Badge>
       case 'bye':
-        return <Badge variant="outline">Voľno</Badge>
+        return <Badge variant="outline">{t.common.bye}</Badge>
       default:
         return null
     }
@@ -51,11 +54,11 @@ export function RoundPairings({ roundNumber, matches, players, isActive }: Round
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between gap-3">
-          <span>Kolo {roundNumber}</span>
+          <span>{t.common.round} {roundNumber}</span>
           {isActive && (
-            <Badge className="bg-primary/15 text-primary">Prebieha</Badge>
+            <Badge className="bg-primary/15 text-primary">{t.common.active}</Badge>
           )}
-          {!isActive && <Badge variant="secondary">Uzavreté</Badge>}
+          {!isActive && <Badge variant="secondary">{t.common.closed}</Badge>}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -79,7 +82,7 @@ export function RoundPairings({ roundNumber, matches, players, isActive }: Round
                   <div className="flex items-center gap-2">
                     <Circle className="h-3 w-3 fill-background text-foreground" />
                     <span className={`min-w-0 truncate font-medium ${match.result === 'white' ? 'text-primary' : ''}`}>
-                      {white?.name ?? 'Neznámy'}
+                      {white?.name ?? t.common.unknown}
                     </span>
                     {white?.rating && (
                       <span className="text-xs text-muted-foreground">({white.rating})</span>
@@ -88,11 +91,11 @@ export function RoundPairings({ roundNumber, matches, players, isActive }: Round
 
                   <div className="flex items-center sm:justify-center">
                     {match.isBye ? (
-                      <Badge variant="outline">Voľno</Badge>
+                      <Badge variant="outline">{t.common.bye}</Badge>
                     ) : match.result !== 'pending' ? (
                       getResultDisplay(match.result)
                     ) : (
-                      <span className="text-sm text-muted-foreground">proti</span>
+                      <span className="text-sm text-muted-foreground">{t.common.vs}</span>
                     )}
                   </div>
 
@@ -103,7 +106,7 @@ export function RoundPairings({ roundNumber, matches, players, isActive }: Round
                           <span className="text-xs text-muted-foreground">({black.rating})</span>
                         )}
                         <span className={`min-w-0 truncate font-medium ${match.result === 'black' ? 'text-primary' : ''}`}>
-                          {black?.name ?? 'Neznámy'}
+                          {black?.name ?? t.common.unknown}
                         </span>
                         <Circle className="h-3 w-3 text-muted-foreground" />
                       </>
@@ -151,7 +154,7 @@ export function RoundPairings({ roundNumber, matches, players, isActive }: Round
                 {!isPending && !match.isBye && (
                   <div className="flex items-center gap-2 text-sm text-muted-foreground sm:justify-end">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                    Zapísané
+                    {t.common.recorded}
                   </div>
                 )}
               </div>

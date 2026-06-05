@@ -3,13 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import type { Tournament } from '@/lib/tournament/types'
+import { formatPlayerCount, formatRoundCount, translations, type Language } from '@/lib/i18n'
 import { ArrowRight, CalendarDays, Clock, Trophy, Users } from 'lucide-react'
 
 interface TournamentCardProps {
   tournament: Tournament
+  language: Language
 }
 
-export function TournamentCard({ tournament }: TournamentCardProps) {
+export function TournamentCard({ tournament, language }: TournamentCardProps) {
+  const t = translations[language]
   const statusColors = {
     setup: 'bg-muted text-muted-foreground',
     active: 'bg-primary/15 text-primary',
@@ -17,9 +20,9 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
   }
 
   const statusLabels = {
-    setup: 'Nastavenie',
-    active: 'Prebieha',
-    complete: 'Ukončený'
+    setup: t.common.setup,
+    active: t.common.active,
+    complete: t.common.complete
   }
 
   const playerCount = tournament.playerCount ?? tournament.players?.length ?? 0
@@ -46,26 +49,26 @@ export function TournamentCard({ tournament }: TournamentCardProps) {
             </div>
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4" />
-              <span>{playerCount} hráčov</span>
+              <span>{formatPlayerCount(playerCount, language)}</span>
             </div>
             <div className="flex items-center gap-2">
               <Trophy className="h-4 w-4" />
-              <span>{tournament.rounds} kôl</span>
+              <span>{formatRoundCount(tournament.rounds, language)}</span>
             </div>
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4" />
-              <span>Kolo {tournament.currentRound}/{tournament.rounds}</span>
+              <span>{t.common.round} {tournament.currentRound}/{tournament.rounds}</span>
             </div>
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>Postup turnaja</span>
+              <span>{t.home.tournamentProgress}</span>
               <span>{progress}%</span>
             </div>
             <Progress value={progress} />
           </div>
           <div className="flex items-center justify-between border-t pt-3 text-sm font-medium text-primary">
-            <span>Otvoriť turnaj</span>
+            <span>{t.home.openTournament}</span>
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </div>
         </CardContent>

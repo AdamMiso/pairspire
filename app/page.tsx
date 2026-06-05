@@ -5,10 +5,14 @@ import { EmptyTournaments } from '@/components/empty-tournaments'
 import { listTournaments } from '@/lib/tournament/actions'
 import { Button } from '@/components/ui/button'
 import { Plus, Trophy, Users } from 'lucide-react'
+import { getLanguage } from '@/lib/i18n-server'
+import { translations } from '@/lib/i18n'
 
 export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
+  const language = await getLanguage()
+  const t = translations[language]
   let tournaments: Awaited<ReturnType<typeof listTournaments>> = []
   try {
     tournaments = await listTournaments()
@@ -27,15 +31,15 @@ export default async function HomePage() {
         <div className="mb-8 rounded-lg border bg-card p-5 sm:p-6">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Turnaje</h1>
+              <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{t.home.title}</h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-                Jednoduchá správa švajčiarskych šachových turnajov: súpiska, párovania, výsledky a poradie na jednom mieste.
+                {t.home.intro}
               </p>
             </div>
             <Button asChild className="gap-2">
               <Link href="/tournament/new">
                 <Plus className="h-4 w-4" />
-                Nový turnaj
+                {t.common.newTournament}
               </Link>
             </Button>
           </div>
@@ -45,21 +49,21 @@ export default async function HomePage() {
               <div className="rounded-md border bg-muted/30 p-4">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Trophy className="h-4 w-4" />
-                  Turnaje
+                  {t.home.tournaments}
                 </div>
                 <p className="mt-2 text-2xl font-semibold">{tournaments.length}</p>
               </div>
               <div className="rounded-md border bg-muted/30 p-4">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Trophy className="h-4 w-4" />
-                  Prebiehajú
+                  {t.home.activeTournaments}
                 </div>
                 <p className="mt-2 text-2xl font-semibold">{activeCount}</p>
               </div>
               <div className="rounded-md border bg-muted/30 p-4">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Users className="h-4 w-4" />
-                  Hráči spolu
+                  {t.home.totalPlayers}
                 </div>
                 <p className="mt-2 text-2xl font-semibold">{totalPlayers}</p>
               </div>
@@ -68,11 +72,11 @@ export default async function HomePage() {
         </div>
 
         {tournaments.length === 0 ? (
-          <EmptyTournaments />
+          <EmptyTournaments language={language} />
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {tournaments.map((tournament) => (
-              <TournamentCard key={tournament.id} tournament={tournament} />
+              <TournamentCard key={tournament.id} tournament={tournament} language={language} />
             ))}
           </div>
         )}

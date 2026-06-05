@@ -11,6 +11,7 @@ import { Switch } from '@/components/ui/switch'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { createTournament } from '@/lib/tournament/actions'
+import { formatRoundCount, translations, translateServerError, type Language } from '@/lib/i18n'
 import { ArrowLeft, Loader2, Shuffle, Trophy, Users } from 'lucide-react'
 
 function parsePlayers(value: string) {
@@ -28,8 +29,13 @@ function recommendedRounds(playerCount: number) {
   return 6
 }
 
-export function CreateTournamentForm() {
+interface CreateTournamentFormProps {
+  language: Language
+}
+
+export function CreateTournamentForm({ language }: CreateTournamentFormProps) {
   const router = useRouter()
+  const t = translations[language]
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [randomizeSeeding, setRandomizeSeeding] = useState(false)
@@ -50,7 +56,7 @@ export function CreateTournamentForm() {
     const byePoints = parseFloat(formData.get('byePoints') as string)
 
     if (players.length < 2) {
-      setError('Zadajte aspoň 2 hráčov')
+      setError(t.create.errors.minPlayers)
       setIsLoading(false)
       return
     }
@@ -66,7 +72,7 @@ export function CreateTournamentForm() {
       })
       router.push(`/tournament/${tournament.id}`)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Nepodarilo sa vytvoriť turnaj')
+      setError(err instanceof Error ? translateServerError(err.message, language, t.create.errors.createFailed) : t.create.errors.createFailed)
       setIsLoading(false)
     }
   }
@@ -78,36 +84,36 @@ export function CreateTournamentForm() {
       <Button asChild variant="ghost" className="gap-2 px-0">
         <Link href="/">
           <ArrowLeft className="h-4 w-4" />
-          Späť na turnaje
+          {t.create.back}
         </Link>
       </Button>
 
       <div className="grid gap-6 lg:grid-cols-[1fr,320px]">
         <Card>
           <CardHeader>
-            <CardTitle>Vytvoriť turnaj</CardTitle>
+            <CardTitle>{t.create.title}</CardTitle>
             <CardDescription>
-              Najrýchlejšia cesta: pomenujte turnaj, vložte zoznam hráčov a spustite prvé kolo na ďalšej obrazovke.
+              {t.create.description}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Detaily turnaja</h3>
+                <h3 className="text-lg font-semibold">{t.create.details}</h3>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="name">Názov turnaja</Label>
+                    <Label htmlFor="name">{t.create.name}</Label>
                     <Input
                       id="name"
                       name="name"
-                      placeholder="napr. Piatkový klubový turnaj"
+                      placeholder={t.create.namePlaceholder}
                       required
                       disabled={isLoading}
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="date">Dátum</Label>
+                    <Label htmlFor="date">{t.common.date}</Label>
                     <Input
                       id="date"
                       name="date"
@@ -119,35 +125,35 @@ export function CreateTournamentForm() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="rounds">Počet kôl</Label>
+                    <Label htmlFor="rounds">{t.create.rounds}</Label>
                     <Select name="rounds" defaultValue="3" disabled={isLoading}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Vyberte počet kôl" />
+                        <SelectValue placeholder={t.create.roundsPlaceholder} />
                       </SelectTrigger>
                       <SelectContent>
                         {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
                           <SelectItem key={n} value={n.toString()}>
-                            {n} {n === 1 ? 'kolo' : 'kôl'}
+                            {formatRoundCount(n, language)}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                     {players.length >= 2 && (
                       <p className="text-xs text-muted-foreground">
-                        Pre {players.length} hráčov odporúčame približne {suggestedRounds} {suggestedRounds === 1 ? 'kolo' : 'kolá'}.
+                        {t.create.recommendation(players.length, suggestedRounds)}
                       </p>
                     )}
                   </div>
 
                   <div className="space-y-2 sm:col-span-2">
-                    <Label htmlFor="byePoints">Body za voľno</Label>
+                    <Label htmlFor="byePoints">{t.create.byePoints}</Label>
                     <Select name="byePoints" defaultValue="1" disabled={isLoading}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Vyberte body za voľno" />
+                        <SelectValue placeholder={t.create.byePointsPlaceholder} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="0.5">0,5 bodu</SelectItem>
-                        <SelectItem value="1">1 bod</SelectItem>
+                        <SelectItem value="0.5">{t.create.halfPoint}</SelectItem>
+                        <SelectItem value="1">{t.create.onePoint}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -157,9 +163,9 @@ export function CreateTournamentForm() {
               <div className="space-y-4">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold">Hráči</h3>
+                    <h3 className="text-lg font-semibold">{t.common.players}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Každý riadok je jeden hráč. Poradie riadkov je nasadenie.
+                      {t.create.playersDescription}
                     </p>
                   </div>
                   <div className="flex items-center gap-2 rounded-md border bg-muted/40 px-3 py-2">
@@ -171,25 +177,25 @@ export function CreateTournamentForm() {
                     />
                     <Label htmlFor="randomize" className="flex cursor-pointer items-center gap-2 text-sm">
                       <Shuffle className="h-4 w-4" />
-                      Náhodné nasadenie
+                      {t.create.randomSeeding}
                     </Label>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="players">Zoznam hráčov</Label>
+                  <Label htmlFor="players">{t.create.playerList}</Label>
                   <Textarea
                     id="players"
                     value={playersText}
                     onChange={(event) => setPlayersText(event.target.value)}
-                    placeholder={'Anna Nováková\nBoris Kováč\nCyril Horváth\nDana Šimková'}
+                    placeholder={t.create.playerPlaceholder}
                     className="min-h-48 resize-y"
                     disabled={isLoading}
                     required
                   />
                   <div className="flex flex-col gap-1 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-                    <span>{players.length} {players.length === 1 ? 'hráč' : players.length > 1 && players.length < 5 ? 'hráči' : 'hráčov'} pripravených</span>
-                    <span>{randomizeSeeding ? 'Nasadenie sa zamieša pri vytvorení.' : 'Prvý riadok bude prvý nasadený.'}</span>
+                    <span>{t.create.playersReady(players.length)}</span>
+                    <span>{randomizeSeeding ? t.create.randomizedHint : t.create.seededHint}</span>
                   </div>
                 </div>
               </div>
@@ -204,12 +210,12 @@ export function CreateTournamentForm() {
                 {isLoading ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    Vytváranie...
+                    {t.create.creating}
                   </>
                 ) : (
                   <>
                     <Trophy className="h-4 w-4" />
-                    Vytvoriť turnaj
+                    {t.home.createTournament}
                   </>
                 )}
               </Button>
@@ -222,13 +228,13 @@ export function CreateTournamentForm() {
             <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-md bg-primary/10">
               <Users className="h-5 w-5 text-primary" />
             </div>
-            <h2 className="font-semibold">Čo bude ďalej</h2>
+            <h2 className="font-semibold">{t.create.whatNext}</h2>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              Po vytvorení uvidíte poradie, hráčov a ovládanie turnaja na jednej obrazovke. Prvé kolo spustíte jedným tlačidlom.
+              {t.create.whatNextDescription}
             </p>
           </div>
           <div className="rounded-lg border bg-muted/35 p-5 text-sm leading-6 text-muted-foreground">
-            Ak ešte neviete kompletnú súpisku, vytvorte turnaj s minimálne dvoma hráčmi a ďalších doplníte cez odkaz na prihlásenie.
+            {t.create.rosterHint}
           </div>
         </aside>
       </div>

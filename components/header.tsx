@@ -1,9 +1,15 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
+import { LanguageSwitcher } from '@/components/language-switcher'
+import { getLanguage } from '@/lib/i18n-server'
+import { translations } from '@/lib/i18n'
 import { Plus } from 'lucide-react'
 
-export function Header() {
+export async function Header() {
+  const language = await getLanguage()
+  const t = translations[language]
+
   return (
     <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -19,16 +25,24 @@ export function Header() {
           <span className="truncate text-lg font-bold tracking-tight sm:text-xl">Pairspire</span>
         </Link>
         <nav className="flex shrink-0 items-center gap-2 sm:gap-4">
+          <LanguageSwitcher
+            language={language}
+            labels={{
+              language: t.common.language,
+              slovak: t.common.slovak,
+              english: t.common.english,
+            }}
+          />
           <Link href="/rules">
             <Button variant="ghost" size="sm">
-              Pravidlá
+              {t.common.rules}
             </Button>
           </Link>
           <Link href="/tournament/new">
             <Button size="sm" className="gap-2">
               <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline">Nový turnaj</span>
-              <span className="sm:hidden">Nový</span>
+              <span className="hidden sm:inline">{t.common.newTournament}</span>
+              <span className="sm:hidden">{t.common.new}</span>
             </Button>
           </Link>
         </nav>

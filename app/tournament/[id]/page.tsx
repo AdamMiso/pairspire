@@ -11,6 +11,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { CalendarDays, ClipboardList, ExternalLink, Trophy, Users } from 'lucide-react'
+import { getLanguage } from '@/lib/i18n-server'
+import { translations } from '@/lib/i18n'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,6 +21,8 @@ interface TournamentPageProps {
 }
 
 export default async function TournamentPage({ params }: TournamentPageProps) {
+  const language = await getLanguage()
+  const t = translations[language]
   const { id } = await params
   const tournament = await getTournament(id)
 
@@ -43,9 +47,9 @@ export default async function TournamentPage({ params }: TournamentPageProps) {
   const leader = standings[0]
 
   const statusConfig = {
-    setup: { label: 'Nastavenie', className: 'bg-muted text-muted-foreground' },
-    active: { label: 'Prebieha', className: 'bg-primary/15 text-primary' },
-    complete: { label: 'Ukončený', className: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200' }
+    setup: { label: t.common.setup, className: 'bg-muted text-muted-foreground' },
+    active: { label: t.common.active, className: 'bg-primary/15 text-primary' },
+    complete: { label: t.common.complete, className: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200' }
   }
 
   // Build rounds data for tabs
@@ -59,12 +63,12 @@ export default async function TournamentPage({ params }: TournamentPageProps) {
   const completedRounds = roundsData.filter((round) => round.status === 'complete').length
 
   const nextStep = tournament.status === 'complete'
-    ? 'Turnaj je ukončený. Skontrolujte finálne poradie alebo obnovte staršiu revíziu.'
+    ? t.tournament.nextStepComplete
     : hasActiveRound
-      ? `Zapíšte ${pendingResults} ${pendingResults === 1 ? 'výsledok' : pendingResults > 1 && pendingResults < 5 ? 'výsledky' : 'výsledkov'} v aktuálnom kole.`
+      ? t.tournament.nextStepPending(pendingResults)
       : activePlayers.length < 2
-        ? 'Pridajte aspoň dvoch aktívnych hráčov, aby sa dalo spustiť prvé kolo.'
-        : `Turnaj je pripravený na kolo ${tournament.currentRound + 1}.`
+        ? t.tournament.nextStepNeedsPlayers
+        : t.tournament.nextStepReady(tournament.currentRound + 1)
 
   return (
     <div className="min-h-screen bg-background">
@@ -78,7 +82,7 @@ export default async function TournamentPage({ params }: TournamentPageProps) {
                   {statusConfig[tournament.status].label}
                 </Badge>
                 <span className="text-sm text-muted-foreground">
-                  Kolo {tournament.currentRound}/{tournament.rounds}
+                  {t.common.round} {tournament.currentRound}/{tournament.rounds}
                 </span>
               </div>
               <div>
@@ -90,7 +94,7 @@ export default async function TournamentPage({ params }: TournamentPageProps) {
             <Button asChild variant="outline" className="gap-2 lg:mt-1">
               <Link href={`/tournament/${id}/join`}>
                 <ExternalLink className="h-4 w-4" />
-                Odkaz pre hráčov
+                {t.tournament.playerLink}
               </Link>
             </Button>
           </div>
@@ -99,28 +103,28 @@ export default async function TournamentPage({ params }: TournamentPageProps) {
             <div className="rounded-md border bg-muted/30 p-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Users className="h-4 w-4" />
-                Aktívni hráči
+                {t.tournament.activePlayers}
               </div>
               <p className="mt-2 text-2xl font-semibold">{activePlayers.length}</p>
             </div>
             <div className="rounded-md border bg-muted/30 p-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <ClipboardList className="h-4 w-4" />
-                Dokončené kolá
+                {t.tournament.completedRounds}
               </div>
               <p className="mt-2 text-2xl font-semibold">{completedRounds}/{tournament.rounds}</p>
             </div>
             <div className="rounded-md border bg-muted/30 p-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Trophy className="h-4 w-4" />
-                Líder
+                {t.tournament.leader}
               </div>
               <p className="mt-2 truncate text-lg font-semibold">{leader ? leader.name : '-'}</p>
             </div>
             <div className="rounded-md border bg-muted/30 p-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <CalendarDays className="h-4 w-4" />
-                Dátum
+                {t.common.date}
               </div>
               <p className="mt-2 text-lg font-semibold">{tournament.date}</p>
             </div>
@@ -131,21 +135,21 @@ export default async function TournamentPage({ params }: TournamentPageProps) {
           <div className="space-y-6">
             <Tabs defaultValue={tournament.currentRound > 0 ? 'rounds' : 'standings'} className="space-y-4">
               <TabsList className="grid w-full grid-cols-3 sm:w-auto">
-                <TabsTrigger value="standings">Poradie</TabsTrigger>
-                <TabsTrigger value="rounds">Kolá</TabsTrigger>
-                <TabsTrigger value="players">Hráči</TabsTrigger>
+                <TabsTrigger value="standings">{t.common.standings}</TabsTrigger>
+                <TabsTrigger value="rounds">{t.common.rounds}</TabsTrigger>
+                <TabsTrigger value="players">{t.common.players}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="standings">
-                <StandingsTable players={standings} />
+                <StandingsTable players={standings} language={language} />
               </TabsContent>
 
               <TabsContent value="rounds" className="space-y-4">
                 {roundsData.length === 0 ? (
                   <div className="rounded-lg border bg-card px-6 py-12 text-center">
-                    <h2 className="text-lg font-semibold">Žiadne kolo ešte nebeží</h2>
+                    <h2 className="text-lg font-semibold">{t.tournament.noRoundTitle}</h2>
                     <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-                      Skontrolujte súpisku hráčov a v paneli ovládania spustite prvé kolo.
+                      {t.tournament.noRoundDescription}
                     </p>
                   </div>
                 ) : (
@@ -156,6 +160,7 @@ export default async function TournamentPage({ params }: TournamentPageProps) {
                       matches={round.matches ?? []}
                       players={players}
                       isActive={round.status === 'active'}
+                      language={language}
                     />
                   )).reverse()
                 )}
@@ -166,6 +171,7 @@ export default async function TournamentPage({ params }: TournamentPageProps) {
                   tournamentId={id}
                   players={players}
                   canAddPlayers={!hasActiveRound && tournament.status !== 'complete'}
+                  language={language}
                 />
               </TabsContent>
             </Tabs>
@@ -176,10 +182,12 @@ export default async function TournamentPage({ params }: TournamentPageProps) {
               tournament={tournament}
               players={players}
               hasActiveRound={hasActiveRound}
+              language={language}
             />
             <RevisionHistory
               tournamentId={id}
               revisions={revisions}
+              language={language}
             />
           </div>
         </div>

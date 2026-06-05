@@ -10,16 +10,19 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge'
 import { addPlayer, updatePlayer } from '@/lib/tournament/actions'
 import type { Player } from '@/lib/tournament/types'
+import { translations, translateServerError, type Language } from '@/lib/i18n'
 import { Loader2, Plus, UserMinus, UserPlus } from 'lucide-react'
 
 interface PlayerManagementProps {
   tournamentId: string
   players: Player[]
   canAddPlayers?: boolean
+  language: Language
 }
 
-export function PlayerManagement({ tournamentId, players, canAddPlayers = false }: PlayerManagementProps) {
+export function PlayerManagement({ tournamentId, players, canAddPlayers = false, language }: PlayerManagementProps) {
   const router = useRouter()
+  const t = translations[language]
   const [loadingId, setLoadingId] = useState<string | null>(null)
   const [isAdding, setIsAdding] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -35,7 +38,7 @@ export function PlayerManagement({ tournamentId, players, canAddPlayers = false 
     const ratingValue = String(formData.get('rating') ?? '').trim()
 
     if (!name) {
-      setError('Zadajte meno hráča')
+      setError(t.playerManagement.errors.nameRequired)
       setIsAdding(false)
       return
     }
@@ -48,7 +51,7 @@ export function PlayerManagement({ tournamentId, players, canAddPlayers = false 
       form.reset()
       router.refresh()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Nepodarilo sa pridať hráča')
+      setError(err instanceof Error ? translateServerError(err.message, language, t.playerManagement.errors.addFailed) : t.playerManagement.errors.addFailed)
     } finally {
       setIsAdding(false)
     }
@@ -61,7 +64,7 @@ export function PlayerManagement({ tournamentId, players, canAddPlayers = false 
       await updatePlayer(player.id, { isActive: !player.isActive })
       router.refresh()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Nepodarilo sa zmeniť stav hráča')
+      setError(err instanceof Error ? translateServerError(err.message, language, t.playerManagement.errors.updateFailed) : t.playerManagement.errors.updateFailed)
     } finally {
       setLoadingId(null)
     }
@@ -78,7 +81,7 @@ export function PlayerManagement({ tournamentId, players, canAddPlayers = false 
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <span>Hráči ({players.length})</span>
+          <span>{t.common.players} ({players.length})</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -86,11 +89,11 @@ export function PlayerManagement({ tournamentId, players, canAddPlayers = false 
           <form onSubmit={handleAddPlayer} className="rounded-md border bg-muted/30 p-4">
             <div className="grid gap-3 sm:grid-cols-[1fr,140px,auto] sm:items-end">
               <div className="space-y-2">
-                <Label htmlFor="new-player-name">Meno hráča</Label>
+                <Label htmlFor="new-player-name">{t.playerManagement.name}</Label>
                 <Input
                   id="new-player-name"
                   name="name"
-                  placeholder="Nový hráč"
+                  placeholder={t.playerManagement.newPlayer}
                   disabled={isAdding}
                 />
               </div>
@@ -101,13 +104,13 @@ export function PlayerManagement({ tournamentId, players, canAddPlayers = false 
                   name="rating"
                   type="number"
                   min="0"
-                  placeholder="voliteľné"
+                  placeholder={t.common.optional}
                   disabled={isAdding}
                 />
               </div>
               <Button type="submit" className="gap-2" disabled={isAdding}>
                 {isAdding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-                Pridať
+                {t.playerManagement.add}
               </Button>
             </div>
           </form>
@@ -121,16 +124,16 @@ export function PlayerManagement({ tournamentId, players, canAddPlayers = false 
 
         {players.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
-            Nenašli sa žiadni hráči. Prosím, vytvorte turnaj znova.
+            {t.playerManagement.noPlayers}
           </div>
         ) : (
           <div className="overflow-x-auto rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-16 text-center">Nas.</TableHead>
-                  <TableHead>Meno</TableHead>
-                  <TableHead className="text-center">Stav</TableHead>
+                  <TableHead className="w-16 text-center">{t.playerManagement.seed}</TableHead>
+                  <TableHead>{t.playerManagement.name}</TableHead>
+                  <TableHead className="text-center">{t.playerManagement.status}</TableHead>
                   <TableHead className="w-[100px]"></TableHead>
                 </TableRow>
               </TableHeader>
@@ -143,7 +146,7 @@ export function PlayerManagement({ tournamentId, players, canAddPlayers = false 
                     <TableCell className="font-medium">{player.name}</TableCell>
                     <TableCell className="text-center">
                       <Badge variant={player.isActive ? 'default' : 'secondary'}>
-                        {player.isActive ? 'Aktívny' : 'Odstúpil'}
+                        {player.isActive ? t.playerManagement.active : t.playerManagement.withdrawn}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -153,8 +156,8 @@ export function PlayerManagement({ tournamentId, players, canAddPlayers = false 
                           size="icon"
                           onClick={() => handleToggleActive(player)}
                           disabled={loadingId === player.id}
-                          aria-label={player.isActive ? `Odstúpiť hráča ${player.name}` : `Obnoviť hráča ${player.name}`}
-                          title={player.isActive ? 'Odstúpiť hráča' : 'Obnoviť hráča'}
+                          aria-label={player.isActive ? t.playerManagement.withdrawPlayer(player.name) : t.playerManagement.restorePlayer(player.name)}
+                          title={player.isActive ? t.playerManagement.withdrawTitle : t.playerManagement.restoreTitle}
                         >
                           {loadingId === player.id ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
